@@ -1,3 +1,31 @@
+.custom-fa-search{
+	position: relative;
+}
+.custom-fa-search::after{
+	content: "\f002";
+	font-family: FontAwesome;
+	top: 20%;
+	left: 10px;
+	position: absolute;
+}
+.custom-fa-search input{
+	padding-left: 35px;
+}
+
+.custom-fa-calender{
+	position: relative;
+}
+.custom-fa-calender::after{
+	content: "\f073";
+	font-family: FontAwesome;
+	top: 20%;
+	left: 10px;
+	position: absolute;
+}
+.custom-fa-calender input{
+	padding-left: 35px;
+}
+
 .block-space{
 	background-color: white;
 	width: 100%;

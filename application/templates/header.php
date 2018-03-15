@@ -239,7 +239,7 @@
             <li><a href="#sales_o" aria-expanded="false" data-toggle="collapse"> <i class="icon-interface-windows"></i>Sales Order</a>
               <ul id="sales_o" class="collapse list-unstyled">
               <?php if($this->role_module->get(14) == true){ ?>
-                <li><a href="<?php echo base_url()."sales/billing"; ?>">Billing</a></li>
+                <li><a href="<?php echo base_url()."sales/billing/"; ?>">Billing</a></li>
               <?php } ?>
 
               <?php if($this->role_module->get(15) == true){ ?>

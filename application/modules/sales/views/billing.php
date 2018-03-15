@@ -720,7 +720,7 @@ $(window).on("load", function(){
 /*Pembayaran*/
 
 $(document).on("click", "#btn-bayar", function(){
-	if ($("#billing_id").val() != "") {
+	if ($(".billing_id").val() != "") {
 
 		$("#modal4").modal("show");
 		var total1 = $("#grand_total").val();
@@ -735,8 +735,7 @@ function hitung_bayar(){
 	var grand_total = parseInt($("#grand_total").val());
 	var totalCash = parseInt($("#totalCash").val() ? $("#totalCash").val() : 0);
 	var totalCredit = parseInt($("#totalCredit").val() ? $("#totalCredit").val() : 0);
-	var totalDebit = parseInt($("#totalDebit").val() ? $("#totalCredit").val() : 0);
-
+	var totalDebit = parseInt($("#totalDebit").val() ? $("#totalDebit").val() : 0);
 
 	var totalPay = totalCash + totalCredit + totalDebit;
 
@@ -767,6 +766,9 @@ $(document).on("input", "#totalCredit", function(){
 $(document).on("input", "#totalDebit", function(){
 	hitung_bayar();
 })
+
+
+
 var tableCustomer = $("#customerLookup").tableData({
 	url : '<?php echo base_url() ?>' + 'sales/billing/load_customer',
 	search : "#searchCustomerFilter",
@@ -1092,43 +1094,68 @@ $(document).on("input", "#setDiscountPrice", function(){
 })
 
 $(document).on('click','#btnSavePaid', function(){
-	var billing_id = $(".billing_id").val();
-	var billing_notes = $("#billing_notes").val();
-	var customer_id = $("#customer_id").val();
-	var totalCash = $("#totalCash").val();
-	var totalCredit = $("#totalCredit").val();
-	var creditCardBank = $("#creditCardBank").val();
-	var creditCardTrx = $("#creditCardTrx").val();
-	var totalDebit = $("#totalDebit").val();
-	var debitCardBank = $("#debitCardBank").val();
-	var debitCardTrx = $("#debitCardTrx").val();
 
-	var dataSend = {
-			billing_id : billing_id,
-			billing_notes : billing_notes,
-			customer_id : customer_id,
-			total_cash : totalCash,
-			total_credit : totalCredit,
-			credit_card_bank : creditCardBank,
-			credit_card_trx : creditCardTrx,
-			total_debit : totalDebit,
-			debit_card_bank : debitCardBank,
-			debit_card_trx : debitCardBank
-		}
+	dataAlert({
+		title : 'Yakin Menyimpan Pembayaran?',
+		text : '',
+		textConfirm : 'Ya',
+		textCancel : 'Tidak'
+	}, function(){
 
-	console.log(dataSend);
-	$.ajax({
-		url : '<?php echo base_url() ?>' + 'sales/billing/save_paid',
-		method : 'POST',
-		data : dataSend,
-		success : function(jsonData){
-			var dataObj = JSON.parse(jsonData);
-			if (dataObj.status == 'ok') {
-				console.log("Success");
+		btnLoader('#btnSavePaid','Menyimpan...');
+
+		var billing_id = $(".billing_id").val();
+		var billing_notes = $("#billing_notes").val();
+		var customer_id = $("#customer_id").val();
+		var totalCash = $("#totalCash").val();
+		var totalCredit = $("#totalCredit").val();
+		var creditCardBank = $("#creditCardBank").val();
+		var creditCardTrx = $("#creditCardTrx").val();
+		var totalDebit = $("#totalDebit").val();
+		var debitCardBank = $("#debitCardBank").val();
+		var debitCardTrx = $("#debitCardTrx").val();
+
+		var dataSend = {
+				billing_id : billing_id,
+				billing_notes : billing_notes,
+				customer_id : customer_id,
+				total_cash : totalCash,
+				total_credit : totalCredit,
+				credit_card_bank : creditCardBank,
+				credit_card_trx : creditCardTrx,
+				total_debit : totalDebit,
+				debit_card_bank : debitCardBank,
+				debit_card_trx : debitCardBank
 			}
-		}
-	})
 
+		
+		$.ajax({
+			url : '<?php echo base_url() ?>' + 'sales/billing/save_paid',
+			method : 'POST',
+			data : dataSend,
+			success : function(jsonData){
+				var dataObj = JSON.parse(jsonData);
+				if (dataObj.status == 'ok') {
+					btnRemoveLoader('#btnSavePaid','<span class="fa fa-save"></span> Simpan');
+
+					$("#modal9").modal('hide');
+
+					dataAlert({
+						title : 'Data Berhasil Disimpan',
+						text : 'Apakah anda ingin menginput data lagi ?',
+						textConfirm : 'Ya',
+						textCancel : 'Tidak'
+					},function(){
+						document.location = '<?php echo base_url() ?>' +'sales/billing'
+					},function(){
+						document.location = '<?php echo base_url() ?>' +'sales/billing'
+					}
+					)
+
+				}
+			}
+		})
+	})
 })
 
 

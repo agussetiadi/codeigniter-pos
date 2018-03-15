@@ -34,13 +34,27 @@
     var text = data.text;
   }
 
+  if (typeof data.textConfirm == 'undefined') {
+    var textConfirm = 'Yes'
+  }
+  else{
+    var textConfirm = data.textConfirm
+  }
+
+  if (typeof data.textCancel == 'undefined') {
+    var textCancel = 'Cancel'
+  }
+  else{
+    var textCancel = data.textCancel
+  }
   swal({
     title: title,
     text: text,
     type: "warning",
     showCancelButton: true,
     confirmButtonColor: "#DD6B55",
-    confirmButtonText: "Yes",
+    confirmButtonText: textConfirm,
+    cancelButtonText: textCancel,
     closeOnConfirm: true
   },
     function(isConfirm){

@@ -16,6 +16,23 @@ class Billing extends MX_Controller
 		date_default_timezone_set("Asia/jakarta");
 	}
 	public function index(){
+		$data['page'] = "list";
+		$store_id = $this->session->userdata("store_id");
+		$store = $this->billing_model->get_store($store_id);
+		$data['store_name'] = $store['store_name'];
+		$data['q_store'] = $this->db->get_where("pos_store", array("is_deleted" => 0));
+		$data['store_id'] = $store_id;
+		$data['jabatan'] = $this->db->get_where("apps_jabatan", array("is_deleted" => 0));
+		$this->template->get($data);
+	}
+
+	public function render_billing(){
+		$store_id = $this->session->userdata('store_id');
+		$billing_status = $this->input->post('billing_status');
+		echo $this->billing_model->render_billing($billing_status);
+	}
+
+	public function order(){
 		$data['trx'] = $this->input->get("trx") ? $this->input->get("trx") : "";
 		$data['page'] = 'billing';
 		$data['query'] = $this->db->get_where("apps_printer",  array('is_deleted' => 0));
@@ -324,7 +341,11 @@ class Billing extends MX_Controller
 						'total_return' => $total_return,
 						'less_paid' => $less_paid,
 						'total_pembulatan' => $pembulatan,
-						'billing_status' => 'done'
+						'billing_status' => 'done',
+						'payment_date' => date('Y-m-d'),
+						'payment_time' => date('H:i:s'),
+						'updated_by' => $this->session->userdata('first_name'),
+						'updated_at' => date('Y-m-d H:i:s')
 						];
 
 		$this->db->where('billing_id', $billing_id);
@@ -333,17 +354,6 @@ class Billing extends MX_Controller
 			echo json_encode(['status' => 'ok']);
 		}
 
-	}
-
-	public function list_order(){
-		$data['page'] = "list";
-		$store_id = $this->session->userdata("store_id");
-		$store = $this->billing_model->get_store($store_id);
-		$data['store_name'] = $store['store_name'];
-		$data['q_store'] = $this->db->get_where("pos_store", array("is_deleted" => 0));
-		$data['store_id'] = $store_id;
-		$data['jabatan'] = $this->db->get_where("apps_jabatan", array("is_deleted" => 0));
-		$this->template->get($data);
 	}
 
 	public function add_spk(){

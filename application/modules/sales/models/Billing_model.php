@@ -18,7 +18,94 @@ class Billing_model extends CI_model
 		
 	}
 
+	public function render_billing($billing_status){
 
+		$requestData = $_REQUEST;
+		$array = array('a.billing_status' => $billing_status);
+
+		if( !empty($requestData['search']) ) {
+
+			$this->db->select("a.billing_id,
+							   a.billing_no,
+							   a.billing_status,
+							   a.grand_total,
+							   a.date_created,
+							   a.created_by,
+							   b.customer_id,
+							   b.customer_name
+								");
+			$this->db->order_by($requestData['field'],$requestData['sort']);
+		    // if there is a search parameter
+		    $this->db->like("b.customer_name",$requestData['search']);
+		    $this->db->limit($requestData['length'],$requestData['start']);
+			$this->db->join("pos_customer AS b", "a.customer_id = b.customer_id","INNER");
+			$query = $this->db->get_where("pos_billing AS a",$array)->result_array();
+
+
+
+			$this->db->select("a.billing_id,
+							   a.billing_no,
+							   a.billing_status,
+							   a.grand_total,
+							   a.created_by,
+							   a.date_created,
+							   b.customer_id,
+							   b.customer_name
+								");
+		    $this->db->like("b.customer_name",$requestData['search']);
+		    $this->db->join("pos_customer AS b", "a.customer_id = b.customer_id","INNER");
+		    $totalFiltered = $this->db->get_where("pos_billing AS a",$array)->num_rows();
+		    
+		}
+		else{
+			$this->db->select("a.billing_id,
+							   a.billing_no,
+							   a.billing_status,
+							   a.grand_total,
+							   a.created_by,
+							   a.date_created,
+							   b.customer_id,
+							   b.customer_name
+								");
+			$this->db->order_by($requestData['field'],$requestData['sort']);
+			$this->db->join("pos_customer AS b", "a.customer_id = b.customer_id","INNER");
+			$this->db->limit($requestData['length'],$requestData['start']);
+			$query = $this->db->get_where("pos_billing AS a",$array)->result_array();
+
+			$this->db->select("a.billing_id,
+							   a.billing_no,
+							   a.billing_status,
+							   a.grand_total,
+							   a.created_by,
+							   a.date_created,
+							   b.customer_id,
+							   b.customer_name
+								");
+			$this->db->join("pos_customer AS b", "a.customer_id = b.customer_id","INNER");
+			$totalFiltered = $this->db->get_where("pos_billing AS a",$array)->num_rows();
+		}
+
+
+
+		$data = [];
+		foreach ($query as $key => $value) {
+			$nested = [];
+
+			$nested[] = $value['billing_no'];
+			$nested[] = $value['date_created'];
+			$nested[] = $value['customer_name'];
+			$nested[] = $value['billing_status'];
+			$nested[] = $value['grand_total'];
+			$nested[] = $value['created_by'];
+			$nested[] = '';
+			
+
+			$data[] = $nested;
+		}
+
+		$json = array('data' => $data,'total' => $totalFiltered);
+		return json_encode($json);
+	}
 	public function get_table(){
 
 		$requestData = $_REQUEST;
